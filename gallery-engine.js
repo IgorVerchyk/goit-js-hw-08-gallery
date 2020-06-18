@@ -7,6 +7,7 @@ const refs = {
 };
 
 function renderGallery() {
+  generateId();
   const galleryItem = gallery.map((item) => {
     return `<li class='gallery__item'>
 		<a class="gallery__link">
@@ -33,6 +34,7 @@ function openModalWindow() {
   refs.modalWindow.classList.add("is-open");
   refs.modalWindow.addEventListener("click", closeModalWindow);
   window.addEventListener("keydown", closeModalWindow);
+  window.addEventListener("keydown", scrollImage);
 }
 function closeModalWindow(event) {
   event.preventDefault();
@@ -44,8 +46,41 @@ function closeModalWindow(event) {
     refs.originalImg.src = "";
     refs.modalWindow.removeEventListener("click", closeModalWindow);
     window.removeEventListener("keydown", closeModalWindow);
+    window.removeEventListener("keydown", scrollImage);
     refs.modalWindow.classList.remove("is-open");
-  } else if (e.key !== "Escape") {
+  } else if (event.key !== "Escape") {
     return;
+  }
+}
+function generateId() {
+  gallery.reduce((id, item) => {
+    item.id = id;
+    return id + 1;
+  }, 1);
+}
+function scrollImage(event) {
+  let targetImageId = Number(refs.originalImg.id);
+  if (event.key === "ArrowLeft") {
+    targetImageId -= 1;
+    scrollProsedure();
+    console.log(targetImageId);
+  } else if (event.key === "ArrowRight") {
+    targetImageId += 1;
+    scrollProsedure();
+    console.log(targetImageId);
+  }
+  function scrollProsedure() {
+    gallery.forEach((item) => {
+      if (item.id === targetImageId) {
+        refs.originalImg.src = item.original;
+        refs.originalImg.alt = item.description;
+        refs.originalImg.id = item.id;
+        targetImageId = refs.originalImg.id;
+      } else if (targetImageId === 0) {
+        targetImageId === gallery.length;
+      } else if (targetImageId > gallery.length) {
+        targetImageId = 1;
+      }
+    });
   }
 }
