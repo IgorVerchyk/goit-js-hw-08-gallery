@@ -22,10 +22,14 @@ refs.list.addEventListener("click", getOriginalSize);
 
 function getOriginalSize(event) {
   event.preventDefault;
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
   const eventTarget = event.target;
   gallery.forEach((item) => {
     if (eventTarget.src === item.preview) {
       refs.originalImg.src = item.original;
+      refs.originalImg.id = item.id;
     }
   });
   openModalWindow();
@@ -48,15 +52,12 @@ function closeModalWindow(event) {
     window.removeEventListener("keydown", closeModalWindow);
     window.removeEventListener("keydown", scrollImage);
     refs.modalWindow.classList.remove("is-open");
-  } else if (event.key !== "Escape") {
-    return;
   }
 }
 function generateId() {
-  gallery.reduce((id, item) => {
-    item.id = id;
-    return id + 1;
-  }, 1);
+  gallery.forEach((item, index) => {
+    item.id = index + 1;
+  });
 }
 function scrollImage(event) {
   let targetImageId = Number(refs.originalImg.id);
