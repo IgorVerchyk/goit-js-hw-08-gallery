@@ -21,7 +21,7 @@ renderGallery();
 refs.list.addEventListener("click", getOriginalSize);
 
 function getOriginalSize(event) {
-  event.preventDefault;
+  event.preventDefault();
   if (event.target.nodeName !== "IMG") {
     return;
   }
